@@ -1,5 +1,6 @@
 {
   "name": "happy-birthday",
+  "homepage": "https://profoundlyparker.github.io/happy-birthday-react-p5",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
