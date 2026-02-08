@@ -13,10 +13,12 @@ export default class Dot {
     this.acceleration = p5.Vector.random2D();
     this.zeroVector = this.sketch.createVector(0, 0); // don't modify
 
-    this.radius = 8;
+    this.radius = 7;
     this.maxSpeed = 12;
-    this.maxForce = 4;
-    this.maxMagnitude = 50;
+    this.maxForce = 3;
+    this.maxMagnitude = 45;
+    this.colorHue = 0; // for rainbow effect
+    this.isMoving = false;
   }
 
   update() {
@@ -26,8 +28,16 @@ export default class Dot {
   }
 
   show() {
-    this.sketch.stroke(255);
-    this.sketch.fill(0);
+    if (this.isMoving) {
+      this.colorHue = (this.colorHue + 20) % 360;
+      this.sketch.colorMode(this.sketch.HSB, 360, 100, 100);
+      this.sketch.stroke(this.colorHue, 100, 100);
+      this.sketch.fill(this.colorHue, 100, 100);
+    } else {
+      this.sketch.colorMode(this.sketch.RGB, 255, 255, 255);
+      this.sketch.stroke(255);
+      this.sketch.fill(0);
+    }
     this.sketch.ellipse(this.position.x, this.position.y, this.radius, this.radius);
   }
 
@@ -44,7 +54,11 @@ export default class Dot {
     if (previousMouseX !== currentMouseX || previousMouseY !== currentMouseY) {
       const mouse = this.sketch.createVector(currentMouseX, currentMouseY);
       const fleeForce = this.flee(mouse);
+      const fleeDistance = p5.Vector.dist(this.position, mouse);
+      this.isMoving = fleeDistance < this.maxMagnitude;
       this.applyForce(fleeForce);
+    } else {
+      this.isMoving = false;
     }
   }
 

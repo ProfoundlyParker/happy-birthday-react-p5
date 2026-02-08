@@ -1,7 +1,7 @@
 import Dot from './Dot';
 import fontFile from './AvenirNextLTPro-Demi.otf';
 
-const defaultFrameRate = 30; // low framerate to avoid too much strain on mobile phones
+const defaultFrameRate = 35; // low framerate to avoid too much strain on mobile phones
 
 
 export default (parent, text) => (sketch) => {
@@ -26,14 +26,14 @@ export default (parent, text) => (sketch) => {
       // ref: https://p5js.org/reference/#/p5.Font/textToPoints
       // I just tweaked these numbers until it "looked right", mainly trial and error :D 
       // The numbers would be different for different text, any suggestions about better way to do this are welcome :) 
-      firstWordPoints = font.textToPoints(`${firstWord} ${secondWord}`, width * 0.04, height * 0.33, width * 0.12)
-      secondWordPoints = font.textToPoints(thirdWord, width * 0.05, height * 0.83, width * 0.3);
+      firstWordPoints = font.textToPoints(`${firstWord} ${secondWord}`, width * 0.07, height * 0.33, width * 0.12, { sampleFactor: 0.15 });
+      secondWordPoints = font.textToPoints(thirdWord, width * 0.05, height * 0.83, width * 0.25, { sampleFactor: 0.15 });
     } else {
       // console.log('in mobile view')
 
-      firstWordPoints = font.textToPoints(firstWord, width * 0.01, height * 0.3, width * 0.3);
-      secondWordPoints = font.textToPoints(secondWord, width * 0.01, height * 0.5, width * 0.25);
-      thirdWordPoints = font.textToPoints(thirdWord, width * 0.01, height * 0.7, width * 0.32);
+      firstWordPoints = font.textToPoints(firstWord, width * 0.01, height * 0.3, width * 0.3, { sampleFactor: 0.2 });
+      secondWordPoints = font.textToPoints(secondWord, width * 0.01, height * 0.5, width * 0.25, { sampleFactor: 0.2 });
+      thirdWordPoints = font.textToPoints(thirdWord, width * 0.01, height * 0.7, width * 0.27, { sampleFactor: 0.2 });
     }
 
     firstWordPoints.forEach((point) => {
@@ -64,5 +64,17 @@ export default (parent, text) => (sketch) => {
       dot.applyAllForces();
       dot.show();
     });
+  };
+
+  sketch.windowResized = () => {
+    // Use setTimeout to ensure parent has resized before updating canvas
+    setTimeout(() => {
+      const width = parent.offsetWidth;
+      const height = parent.offsetHeight;
+      if (width > 0 && height > 0) {
+        sketch.resizeCanvas(width, height);
+        fillDots(width, height);
+      }
+    }, 0);
   };
 };
